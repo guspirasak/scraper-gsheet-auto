@@ -20,8 +20,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install playwright gspread google-auth google-auth-oauthlib google-auth-httplib2
-          playwright install chromium
+          pip install -r requirements.txt
+          playwright install --with-deps chromium
 
       - name: Install dependencies
         run: |
