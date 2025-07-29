@@ -88,8 +88,10 @@ def get_course_rounds(course_list):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
-        page.goto("https://www.9experttraining.com/schedule", timeout=60000)
-        page.wait_for_selector("table")
+        page.goto("https://www.9experttraining.com/schedule", timeout=90000)
+        page.wait_for_load_state("networkidle")
+        page.wait_for_selector("table", timeout=60000)
+        page.screenshot(path="debug.png")
 
         tables = page.query_selector_all("table")
         course_data = {}
