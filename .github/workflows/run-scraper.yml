@@ -1,0 +1,31 @@
+name: Run Scraper
+
+on:
+  schedule:
+    - cron: "0 6 * * *"  # รันทุกวันเวลา 13:00 (เวลาไทย)
+  workflow_dispatch: # ให้กดรันเองได้ด้วย
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install playwright gspread google-auth google-auth-oauthlib google-auth-httplib2
+          playwright install chromium
+
+      - name: Run Scraper
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        run: |
+          echo "$GOOGLE_CREDENTIALS" > credentials.json
+          python scrape_playwright_to_gsheet.py
