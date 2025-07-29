@@ -23,9 +23,16 @@ jobs:
           pip install playwright gspread google-auth google-auth-oauthlib google-auth-httplib2
           playwright install chromium
 
+      - name: Install dependencies
+        run: |
+         pip install -r requirements.txt
+         playwright install --with-deps chromium
+
       - name: Run Scraper
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: |
           echo "$GOOGLE_CREDENTIALS" > credentials.json
           python scrape_playwright_to_gsheet.py
+
+
