@@ -88,10 +88,13 @@ def get_course_rounds(course_list):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
+    try:
         page.goto("https://www.9experttraining.com/schedule", timeout=90000)
-        page.wait_for_load_state("networkidle", timeout=90000)
         page.wait_for_selector("table", timeout=90000)
+    except Exception as e:
         page.screenshot(path="debug.png")
+        print("Error occurred, screenshot saved.")
+        raise e
 
         tables = page.query_selector_all("table")
         course_data = {}
