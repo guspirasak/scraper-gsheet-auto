@@ -88,13 +88,21 @@ def get_course_rounds(course_list):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
-    try:
-        page.goto("https://www.9experttraining.com/schedule", timeout=90000)
-        page.wait_for_selector("table", timeout=90000)
-    except Exception as e:
-        page.screenshot(path="debug.png")
-        print("Error occurred, screenshot saved.")
-        raise e
+
+        try:
+            page.goto("https://www.9experttraining.com/schedule", timeout=90000)
+            page.wait_for_selector("table", timeout=90000)
+        except Exception as e:
+            print(f"❌ ERROR: {e}")
+            # บันทึก screenshot เพื่อ debug ก่อนจะปิด browser
+            try:
+                page.screenshot(path="debug.png")
+                print("📸 Screenshot captured: debug.png")
+            except Exception as screenshot_error:
+                print(f"⚠ Screenshot failed: {screenshot_error}")
+            finally:
+                browser.close()
+            raise e  # ส่งต่อ exception ให้ workflow รู้ว่าล้มเหลว
 
         tables = page.query_selector_all("table")
         course_data = {}
